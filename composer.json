@@ -1,0 +1,27 @@
+{
+    "name": "xorik/cms",
+    "description": "Simple CMS",
+    "require": {
+        "slim/slim": "^3.1"
+    },
+    "license": [
+        "MIT"
+    ],
+    "authors": [
+        {
+            "name": "Andrey Smelov",
+            "email": "xor29a@bk.ru"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://home.xorik.ru/"
+        }
+    ]
+}
