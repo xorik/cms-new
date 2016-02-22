@@ -26,10 +26,17 @@ if (!isset($config['env']) || !in_array($config['env'], ['dev', 'test', 'prod'])
 	die('Please set env to one of (dev,test,prod) in file: ' . $file);
 }
 
-$app = new \Slim\App(['config' => $config, 'rootDir' => __DIR__ . '/']);
+// Start the App
+$app = new \Slim\App(['config' => $config]);
+
+// Configure file root and http root
+$container = $app->getContainer();
+$container['rootDir'] = __DIR__ . '/';
+if (isset($_SERVER['SCRIPT_NAME'])) {
+	$container['httpRoot'] = str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
+}
 
 // Set error handler
-$container = $app->getContainer();
 $container['cmsErrorHandler'] = new \xorik\cms\ErrorHandler($container);
 
 // Prepare config
