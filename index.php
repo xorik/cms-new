@@ -26,10 +26,19 @@ if (!isset($config['env']) || !in_array($config['env'], ['dev', 'test', 'prod'])
 	die('Please set env to one of (dev,test,prod) in file: ' . $file);
 }
 
-$app = new \Slim\App(['config' => $config]);
+$app = new \Slim\App(['config' => $config, 'rootDir' => __DIR__ . '/']);
 
 // Set error handler
 $container = $app->getContainer();
 $container['cmsErrorHandler'] = new \xorik\cms\ErrorHandler($container);
+
+// Prepare config
+$joiner = $container['joiner'] = new \xorik\cms\Joiner($container, $app);
+
+// Prepare CI
+$joiner->run('ci');
+
+// Prepare routes
+$joiner->run('route');
 
 $app->run();
