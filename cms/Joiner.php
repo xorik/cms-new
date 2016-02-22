@@ -49,6 +49,20 @@ class Joiner
 		}
 	}
 
+	public function config($fileName)
+	{
+		if (!$this->isDev) {
+			if (!is_file($configFile = $this->cacheDir . $fileName . '.cache.php')) {
+				// Generate cache file
+				$this->joinConfig($fileName, $configFile);
+			}
+
+			return require $configFile;
+		} else {
+			return $this->getConfig($fileName);
+		}
+	}
+
 	protected function joinPHP($fileName, $cacheFile)
 	{
 		// Try to create cache file
@@ -70,6 +84,44 @@ class Joiner
 		}
 
 		fclose($f);
+	}
+
+	public function joinConfig($fileName, $configFile)
+	{
+		$config = $this->getConfig($fileName);
+
+		// Try to create cache file
+		$f = fopen($configFile, 'w');
+
+		if ($f === false) {
+			die('Error opening file to write:' . $configFile);
+		}
+
+		fputs($f, '<?php' . "\n" . 'return ');
+		fputs($f, var_export($config, true));
+		fputs($f, ';');
+
+		fclose($f);
+	}
+
+	protected function getConfig($fileName)
+	{
+		$container = $this->c;
+
+		$config = [];
+		// Require each file
+		foreach (glob($this->vendorDir . self::GLOB . $fileName . '.php') as $f) {
+			$new = require $f;
+			$config = array_replace_recursive($config, $new);
+		}
+
+		// Require file from configDir, if exists
+		if (is_file($file = $this->configDir . $fileName . '.php')) {
+			$new = require $file;
+			$config = array_replace_recursive($config, $new);
+		}
+
+		return $config;
 	}
 
 	/**

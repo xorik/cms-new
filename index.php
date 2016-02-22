@@ -33,7 +33,11 @@ $container = $app->getContainer();
 $container['cmsErrorHandler'] = new \xorik\cms\ErrorHandler($container);
 
 // Prepare config
-$joiner = $container['joiner'] = new \xorik\cms\Joiner($container, $app);
+$joiner = $container['cmsJoiner'] = new \xorik\cms\Joiner($container, $app);
+$new_config = $joiner->config('config');
+
+// Add values from local config and modules
+$container['config'] = array_replace($config, $new_config);
 
 // Prepare CI
 $joiner->run('ci');
