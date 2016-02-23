@@ -26,7 +26,6 @@
         }
     ],
     "require-dev": {
-        "filp/whoops": "^2.0",
         "raveren/kint": "^1.0"
     }
 }

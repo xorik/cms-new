@@ -1,7 +1,7 @@
 <?php
 
 ini_set('display_errors', 0);
-error_reporting(-1);
+error_reporting(0);
 
 // Try to get config
 if (is_file($file = __DIR__ . '/config.php')) {
@@ -35,9 +35,6 @@ $container['rootDir'] = __DIR__ . '/';
 if (isset($_SERVER['SCRIPT_NAME'])) {
 	$container['httpRoot'] = str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
 }
-
-// Set error handler
-$container['cmsErrorHandler'] = new \xorik\cms\ErrorHandler($container);
 
 // Prepare config
 $joiner = $container['cmsJoiner'] = new \xorik\cms\Joiner($container, $app);
