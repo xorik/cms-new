@@ -43,6 +43,9 @@ $new_config = $joiner->config('config');
 // Add values from local config and modules
 $container['config'] = array_replace($config, $new_config);
 
+// Run init functions from modules and local file
+$joiner->run('init');
+
 // Prepare CI
 $joiner->run('ci');
 
