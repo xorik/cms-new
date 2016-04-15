@@ -9,25 +9,26 @@ class Joiner
 	const GLOB = '*/*/cms/';
 
 	protected $c;
-	protected $app;
 	protected $isDev;
 	protected $vendorDir, $cacheDir, $configDir;
 
-	public function __construct($c, $app)
+	public function __construct($c)
 	{
 		$this->c = $c;
-		$this->app = $app;
 		$this->isDev = $c->config['env'] == 'dev';
 		$this->vendorDir = $c->config['vendorDir'];
 		$this->cacheDir = $c->config['cacheDir'];
 		$this->configDir = $c->config['configDir'];
 	}
 
-	public function run($fileName)
+	public function run($fileName, $data=null)
 	{
-		// Prepare container and app for required files
+		// Prepare container and data for required files
 		$container = $this->c;
-		$app = $this->app;
+
+		if ($data) {
+			extract($data);
+		}
 
 		if (!$this->isDev) {
 			if (!is_file($cacheFile = $this->cacheDir . $fileName . '.cache.php')) {
