@@ -36,6 +36,12 @@ if (isset($_SERVER['SCRIPT_NAME'])) {
 	$container['httpRoot'] = str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
 }
 
+// Use simple routing strategy
+$container['foundHandler'] = function()
+{
+	return new \xorik\cms\SimpleStrategy();
+};
+
 // Prepare config
 $joiner = $container['cmsJoiner'] = new \xorik\cms\Joiner($container, $app);
 $new_config = $joiner->config('config');
