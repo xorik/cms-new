@@ -43,7 +43,7 @@ $container['foundHandler'] = function()
 };
 
 // Prepare config
-$joiner = $container['cmsJoiner'] = new \xorik\cms\Joiner($container);
+$joiner = $container['joiner'] = new \xorik\cms\Joiner($container);
 $new_config = $joiner->config('config');
 
 // Add values from local config and modules

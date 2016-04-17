@@ -55,7 +55,8 @@ class Joiner
 		if (!$this->isDev) {
 			if (!is_file($configFile = $this->cacheDir . $fileName . '.cache.php')) {
 				// Generate cache file
-				$this->joinConfig($fileName, $configFile);
+				$config = $this->getConfig($fileName);
+				$this->saveConfig($config, $configFile);
 			}
 
 			return require $configFile;
@@ -87,19 +88,18 @@ class Joiner
 		fclose($f);
 	}
 
-	public function joinConfig($fileName, $configFile)
-	{
-		$config = $this->getConfig($fileName);
 
+	public function saveConfig($data, $fileName)
+	{
 		// Try to create cache file
-		$f = fopen($configFile, 'w');
+		$f = fopen($fileName, 'w');
 
 		if ($f === false) {
-			die('Error opening file to write:' . $configFile);
+			die('Error opening file to write:' . $fileName);
 		}
 
 		fputs($f, '<?php' . "\n" . 'return ');
-		fputs($f, var_export($config, true));
+		fputs($f, var_export($data, true));
 		fputs($f, ';');
 
 		fclose($f);
