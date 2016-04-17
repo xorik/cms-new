@@ -39,13 +39,8 @@ class Joiner
 			require $cacheFile;
 		} else {
 			// Require each file
-			foreach (glob($this->vendorDir . self::GLOB . $fileName . '.php') as $f) {
+			foreach ($this->getGlob($fileName) as $f) {
 				require $f;
-			}
-
-			// Require file from configDir, if exists
-			if (is_file($file = $this->configDir . $fileName . '.php')) {
-				require $file;
 			}
 		}
 	}
@@ -77,11 +72,7 @@ class Joiner
 		fputs($f, '<?php' . "\n");
 
 		// Get each file and remove <?php at the begin
-		foreach (glob($this->vendorDir . self::GLOB . $fileName . '.php') as $file) {
-			$this->putPHP($f, $file);
-		}
-
-		if (is_file($file = $this->configDir . $fileName . '.php')) {
+		foreach ($this->getGlob($fileName) as $file) {
 			$this->putPHP($f, $file);
 		}
 
@@ -111,18 +102,46 @@ class Joiner
 
 		$config = [];
 		// Require each file
-		foreach (glob($this->vendorDir . self::GLOB . $fileName . '.php') as $f) {
+		foreach ($this->getGlob($fileName) as $f) {
 			$new = require $f;
 			$config = array_replace_recursive($config, $new);
 		}
 
-		// Require file from configDir, if exists
-		if (is_file($file = $this->configDir . $fileName . '.php')) {
-			$new = require $file;
-			$config = array_replace_recursive($config, $new);
+		return $config;
+	}
+
+	protected function getGlob($fileName)
+	{
+		// Path => priority
+		$list = [];
+
+		// Add files from vendorDir
+		foreach (glob($this->vendorDir . self::GLOB . $fileName . '*.php') as $f) {
+			$list[$f] = 0;
 		}
 
-		return $config;
+		// Add files from configDir
+		foreach (glob($this->configDir . $fileName . '*.php') as $f) {
+			$list[$f] = 0;
+		}
+
+		// Prepare preg
+		$preg = '/\/' . preg_quote($fileName) . '(?:\.(-?\d+))?\.php$/';
+
+		// Check if file is ours
+		foreach ($list as $f=>&$prio) {
+			if (!preg_match($preg, $f, $m)) {
+				unset($list[$f]);
+			} elseif (isset($m[1])) {
+				$prio = (int)$m[1];
+			}
+		}
+
+		// Sort list
+		arsort($list);
+
+		// Return files in priority order
+		return array_keys($list);
 	}
 
 	/**
@@ -137,11 +156,11 @@ class Joiner
 			die('Error opening file: ' . $file);
 		}
 
-		$content = preg_replace('/^<\?php/', '', $content);
+		$content = preg_replace('/^<\?php\s+/', '', $content);
 
 		// Add comment (filename)
 		$file = str_replace($this->c->rootDir, '', $file);
-		fputs($f, "\n// $file\n");
+		fputs($f, "\n\n// $file\n");
 
 		fputs($f, $content);
 	}
