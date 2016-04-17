@@ -120,9 +120,9 @@ class Joiner
 			$list[$f] = 0;
 		}
 
-		// Add files from configDir
+		// Add files from configDir, by default add after vendor
 		foreach (glob($this->configDir . $fileName . '*.php') as $f) {
-			$list[$f] = 0;
+			$list[$f] = -1;
 		}
 
 		// Prepare preg
