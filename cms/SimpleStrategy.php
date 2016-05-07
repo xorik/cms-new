@@ -15,6 +15,9 @@ class SimpleStrategy implements InvocationStrategyInterface
 		ResponseInterface $response,
 		array $routeArguments
 	) {
+		// Set route for controller
+		App::getContainer()['route'] = $request->getAttribute('route');
+
 		return call_user_func_array($callable, $routeArguments);
 	}
 }
