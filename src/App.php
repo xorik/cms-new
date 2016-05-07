@@ -31,7 +31,7 @@ class App
 		}
 
 		// Prepare config
-		$joiner = self::$ci['joiner'] = new \xorik\cms\Joiner(self::$ci);
+		$joiner = self::$ci['joiner'] = new Joiner(self::$ci);
 		$new_config = $joiner->config('config');
 
 		// Add values from local config and modules
@@ -40,7 +40,7 @@ class App
 		// Use simple routing strategy
 		self::$ci['foundHandler'] = function()
 		{
-			return new \xorik\cms\SimpleStrategy();
+			return new SimpleStrategy();
 		};
 
 		// Run init functions from modules and local file
