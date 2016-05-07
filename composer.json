@@ -15,18 +15,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "App\\": "app/",
-            "xorik\\cms\\": "cms/"
+            "xorik\\cms\\": "src/"
         }
-    },
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "https://home.xorik.ru/"
-        }
-    ],
-    "require-dev": {
-        "raveren/kint": "^1.0",
-        "filp/whoops": "^2.0"
     }
 }
