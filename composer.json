@@ -17,5 +17,8 @@
         "psr-4": {
             "xorik\\cms\\": "src/"
         }
+    },
+    "suggest": {
+        "rmoiseev/spyc": "dev/master for .yml configs"
     }
 }

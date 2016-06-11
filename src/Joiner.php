@@ -1,6 +1,8 @@
 <?php
 namespace xorik\cms;
 
+use Rmoiseev\Spyc\Spyc;
+
 /**
  * Join PHP files and configs
  */
@@ -103,7 +105,15 @@ class Joiner
 		$config = [];
 		// Require each file
 		foreach ($this->getGlob($fileName) as $f) {
-			$new = require $f;
+			$ext = pathinfo($f, PATHINFO_EXTENSION);
+
+			if ($ext == 'php') {
+				$new = require $f;
+			} elseif ($ext == 'yml') {
+				$new = Spyc::YAMLLoad($f);
+			} else {
+				die("Incorrect file extension: $f");
+			}
 			$config = array_replace_recursive($config, $new);
 		}
 
@@ -116,17 +126,17 @@ class Joiner
 		$list = [];
 
 		// Add files from vendorDir
-		foreach (glob($this->vendorDir . self::GLOB . $fileName . '*.php') as $f) {
+		foreach (glob($this->vendorDir . self::GLOB . $fileName . '*') as $f) {
 			$list[$f] = 0;
 		}
 
 		// Add files from configDir, by default add after vendor
-		foreach (glob($this->configDir . $fileName . '*.php') as $f) {
+		foreach (glob($this->configDir . $fileName . '*') as $f) {
 			$list[$f] = -1;
 		}
 
 		// Prepare preg
-		$preg = '/\/' . preg_quote($fileName) . '(?:\.(-?\d+))?\.php$/';
+		$preg = '/\/' . preg_quote($fileName) . '(?:\.(-?\d+))?\.(?:php|yml)$/';
 
 		// Check if file is ours
 		foreach ($list as $f=>&$prio) {
