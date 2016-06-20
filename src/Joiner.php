@@ -47,9 +47,9 @@ class Joiner
 		}
 	}
 
-	public function config($fileName)
+	public function config($fileName, $cache=true)
 	{
-		if (!$this->isDev) {
+		if ($cache && !$this->isDev) {
 			if (!is_file($configFile = $this->cacheDir . $fileName . '.cache.php')) {
 				// Generate cache file
 				$config = $this->getConfig($fileName);
