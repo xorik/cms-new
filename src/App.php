@@ -38,9 +38,9 @@ class App
 		self::$ci['config'] = array_replace($config, $new_config);
 
 		// Use simple routing strategy
-		self::$ci['foundHandler'] = function()
+		self::$ci['foundHandler'] = function($ci)
 		{
-			return new SimpleStrategy();
+			return new SimpleStrategy($ci);
 		};
 
 		// Run init functions from modules and local file
