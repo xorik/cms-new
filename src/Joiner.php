@@ -81,7 +81,6 @@ class Joiner
 		fclose($f);
 	}
 
-
 	public function saveConfig($data, $fileName)
 	{
 		// Try to create cache file
